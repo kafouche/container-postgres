@@ -8,6 +8,7 @@ LABEL       org.opencontainers.image.base.name="ghcr.io/kafouche/postgres:17"
 LABEL       org.opencontainers.image.ref.name="ghcr.io/kafouche/alpine"
 LABEL       org.opencontainers.image.source="https://github.com/kafouche/container-postgres"
 LABEL       org.opencontainers.image.title="PostgreSQL 17"
+LABEL       image.tags[0]="ghcr.io/kafouche/postgres:latest"
 
 # ------------------------------------------------------------------------------
 
@@ -33,8 +34,5 @@ VOLUME      /var/lib/postgresql/
 
 EXPOSE      5432/tcp
 
-ENTRYPOINT  [ \
-              "/usr/bin/postgres", \
-              "-D", \
-              "/var/lib/postgresql/17/data" \
-            ]
+ENTRYPOINT  [ "/usr/bin/postgres" ]
+CMD         [ "-D", "/var/lib/postgresql/17/data" ]

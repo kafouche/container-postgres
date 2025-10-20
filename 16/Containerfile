@@ -33,8 +33,5 @@ VOLUME      /var/lib/postgresql/
 
 EXPOSE      5432/tcp
 
-ENTRYPOINT  [ \
-              "/usr/bin/postgres", \
-              "-D", \
-              "/var/lib/postgresql/16/data" \
-            ]
+ENTRYPOINT  [ "/usr/bin/postgres" ]
+CMD         [ "-D", "/var/lib/postgresql/16/data" ]
