@@ -1,0 +1,40 @@
+# Dockerfile: postgresql
+# Kafouche PostgreSQL 17 Image.
+
+FROM        ghcr.io/kafouche/alpine:latest
+
+LABEL       org.opencontainers.image.authors="kafouche"
+LABEL       org.opencontainers.image.base.name="ghcr.io/kafouche/postgres:17"
+LABEL       org.opencontainers.image.ref.name="ghcr.io/kafouche/alpine"
+LABEL       org.opencontainers.image.source="https://github.com/kafouche/container-postgres"
+LABEL       org.opencontainers.image.title="PostgreSQL 17"
+
+# ------------------------------------------------------------------------------
+
+RUN         apk --no-cache --update upgrade \
+            && apk --no-cache --update add \
+              icu-data-full \
+              postgresql17
+
+RUN         install -d -g postgres -m 1775 -o postgres /run/postgresql
+
+WORKDIR     /var/lib/postgresql/
+
+USER        postgres
+
+RUN         initdb \
+              --data-checksums \
+              --encoding UTF-8 \
+              --icu-locale=en-001-x-icu \
+              --locale-provider=icu \
+              --pgdata /var/lib/postgresql/17/data
+
+VOLUME      /var/lib/postgresql/
+
+EXPOSE      5432/tcp
+
+ENTRYPOINT  [ \
+              "/usr/bin/postgres", \
+              "-D", \
+              "/var/lib/postgresql/17/data" \
+            ]
