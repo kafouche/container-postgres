@@ -1,20 +1,24 @@
-# Dockerfile: postgresql
+# Containerfile: postgresql
 # Kafouche PostgreSQL 16 Image.
 
 FROM        ghcr.io/kafouche/alpine:latest
 
+ARG         RELEASE=16
+ARG         PG_CONF_DIR=/etc/postgresql$RELEASE
+ARG         PG_DATA_DIR=/var/lib/postgresql/$RELEASE/data
+
 LABEL       org.opencontainers.image.authors="kafouche"
-LABEL       org.opencontainers.image.base.name="ghcr.io/kafouche/postgres:16"
+LABEL       org.opencontainers.image.base.name="ghcr.io/kafouche/postgres:$RELEASE"
 LABEL       org.opencontainers.image.ref.name="ghcr.io/kafouche/alpine"
 LABEL       org.opencontainers.image.source="https://github.com/kafouche/container-postgres"
-LABEL       org.opencontainers.image.title="PostgreSQL 16"
+LABEL       org.opencontainers.image.title="PostgreSQL $RELEASE"
 
 # ------------------------------------------------------------------------------
 
 RUN         apk --no-cache --update upgrade \
             && apk --no-cache --update add \
               icu-data-full \
-              postgresql16
+              "postgresql$RELEASE"
 
 RUN         install -d -g postgres -m 1775 -o postgres /run/postgresql
 
@@ -27,11 +31,10 @@ RUN         initdb \
               --encoding UTF-8 \
               --icu-locale=en-001-x-icu \
               --locale-provider=icu \
-              --pgdata /var/lib/postgresql/16/data
+              --pgdata "$PG_DATA_DIR"
 
 VOLUME      /var/lib/postgresql/
 
 EXPOSE      5432/tcp
 
-ENTRYPOINT  [ "/usr/bin/postgres" ]
-CMD         [ "-D", "/var/lib/postgresql/16/data" ]
+ENTRYPOINT  [ "/usr/bin/postgres", "-D", "$PG_DATA_DIR" ]
